@@ -20,3 +20,31 @@ class User(db.Model):
             "last_name": self.last_name,
             "email": self.email
         }
+    
+class People(db.Model):
+    __tablename__ = 'people'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32))
+    heigth = db.Column(db.Integer)
+    mass = db.Column(db.Integer)
+    hair_color = db.Column(db.String(20))
+    eye_color = db.Column(db.String(20))
+    skin_color = db.Column(db.String(20))
+    birth_year = db.Column(db.String(20))
+    gender = db.Column(db.String(20))
+
+    def __repr__(self):
+        return f"Character name: {self.name}"
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "heigth": self.heigth,
+            "mass": self.mass,
+            "hair_color": self.hair_color,
+            "eye_color": self.eye_color,
+            "skin_color": self.skin_color,
+            "birth_year": self.birth_year,
+            "gender": self.gender
+        }
