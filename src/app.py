@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, People, Starships, Planets
 #from models import Person
 
 app = Flask(__name__)
@@ -78,6 +78,24 @@ def new_user():
     db.session.commit()
 
     return jsonify({"data": new_user.serialize()}), 201
+
+# Traer todos los personajes
+@app.route('/people', methods=['GET'])
+def get_all_people():
+    all_people = People.query.all()
+    people_serialized = []
+    for people in all_people:
+        people_serialized.append(people.serialize())
+    print(people_serialized)
+    return jsonify({"data": people_serialized}), 200
+
+# Traer un sólo personaje
+@app.route('/people/<int:id>', methods=['GET'])
+def get_single_people(id):
+    single_people = People.query.get(id)
+    if single_people is None:
+        return jsonify({"msg": "People with id: {}, not found".format(id)}), 400
+    return jsonify({"data": single_people.serialize()}), 200
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
