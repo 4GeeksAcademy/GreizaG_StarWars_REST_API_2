@@ -2,7 +2,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-last_id = 3
+last_id_user = 3
+last_id_people = 3
+last_id_starships = 3
+last_id_planets = 3
     
 class User(db.Model):
     __tablename__ = 'user'
@@ -13,9 +16,9 @@ class User(db.Model):
     password = db.Column(db.String(32), nullable=False)
     
     def generateId():
-        global last_id
-        last_id += 1
-        return last_id
+        global last_id_user
+        last_id_user += 1
+        return last_id_user
 
     def __repr__(self):
         return f"User name: {self.name}"
@@ -39,6 +42,11 @@ class People(db.Model):
     skin_color = db.Column(db.String(20))
     birth_year = db.Column(db.String(20))
     gender = db.Column(db.String(20))
+
+    def generateId():
+        global last_id_people
+        last_id_people += 1
+        return last_id_people
 
     def __repr__(self):
         return f"Character name: {self.name}"
@@ -65,6 +73,11 @@ class Starships(db.Model):
     length = db.Column(db.Integer)
     crew = db.Column(db.String(20))
     passengers = db.Column(db.Integer)
+
+    def generateId():
+        global last_id_starships
+        last_id_starships += 1
+        return last_id_starships
 
     def __repr__(self):
         return f"Starship name: {self.name}"

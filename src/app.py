@@ -97,6 +97,44 @@ def get_single_people(id):
         return jsonify({"msg": "People with id: {}, not found".format(id)}), 400
     return jsonify({"data": single_people.serialize()}), 200
 
+# Crear nuevo personaje
+@app.route('/people', methods=['POST'])
+def new_people():
+    body = request.get_json(silent=True)
+    if body is None:
+        return jsonify({"msg": "You should send info in body"}), 400
+    if  "name" not in body:
+        return jsonify({"msg": "Name is needed"}), 400
+    if "heigth" not in body:
+        return jsonify({"msg": "Heigth is needed"}), 400
+    if "mass" not in body:
+        return jsonify({"msg": "Mass is needed"}), 400
+    if "hair_color" not in body:
+        return jsonify({"msg": "Hair color is needed"}), 400
+    if "eye_color" not in body:
+        return jsonify({"msg": "Eye color is needed"}), 400
+    if "skin_color" not in body:
+        return jsonify({"msg": "Skin color is needed"}), 400
+    if "birth_year" not in body:
+        return jsonify({"msg": "Birth year is needed"}), 400
+    if "gender" not in body:
+        return jsonify({"msg": "Gender is needed"}), 400
+    
+    new_people = People()
+    new_people.id = body.get("id", People.generateId())
+    new_people.name = body["name"]
+    new_people.heigth = body["heigth"]
+    new_people.mass = body["mass"]
+    new_people.hair_color = body["hair_color"]
+    new_people.eye_color = body["eye_color"]
+    new_people.skin_color = body["skin_color"]
+    new_people.birth_year = body["birth_year"]
+    new_people.gender = body ["gender"]
+    db.session.add(new_people)
+    db.session.commit()
+    
+    return jsonify({"data": new_people.serialize()}), 201
+
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
