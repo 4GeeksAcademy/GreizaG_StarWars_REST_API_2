@@ -79,7 +79,7 @@ class Planets(db.Model):
     name = db.Column(db.String(50), unique=True)
     diameter = db.Column(db.Integer)
     gravity = db.Column(db.String(50))
-    population = db.Column(db.Integer)
+    population = db.Column(db.String(20))
     climate = db.Column(db.String(50))
     terrain = db.Column(db.String(50))
     surface_water = db.Column(db.Integer)
