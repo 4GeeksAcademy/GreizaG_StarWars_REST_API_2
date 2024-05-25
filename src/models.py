@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+
+last_id = 3
     
 class User(db.Model):
     __tablename__ = 'user'
@@ -9,6 +11,11 @@ class User(db.Model):
     last_name = db.Column(db.String(32))
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(32), nullable=False)
+    
+    def generateId():
+        global last_id
+        last_id += 1
+        return last_id
 
     def __repr__(self):
         return f"User name: {self.name}"
