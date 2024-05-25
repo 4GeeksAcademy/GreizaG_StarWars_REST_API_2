@@ -37,6 +37,16 @@ def sitemap():
     return generate_sitemap(app)
 
 # Traer todos los usuarios
+@app.route('/users', methods=['GET'])
+def get_all_users():
+    all_users = User.query.all()
+    users_serialized = []
+    for user in all_users:
+        users_serialized.append(user.serialize())
+    print(users_serialized)
+    return jsonify({"data": users_serialized}), 200
+
+# Traer sólo un usuario
 
 
 # this only runs if `$ python src/app.py` is executed
