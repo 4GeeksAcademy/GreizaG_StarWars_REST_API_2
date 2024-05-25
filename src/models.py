@@ -2,10 +2,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-last_id_user = 3
-last_id_people = 3
-last_id_starships = 3
-last_id_planets = 3
+last_id_user = 0
+last_id_people = 0
+last_id_starships = 0
+last_id_planets = 0
     
 class User(db.Model):
     __tablename__ = 'user'
@@ -103,6 +103,11 @@ class Planets(db.Model):
     climate = db.Column(db.String(50))
     terrain = db.Column(db.String(50))
     surface_water = db.Column(db.Integer)
+
+    def generateId():
+        global last_id_planets
+        last_id_planets += 1
+        return last_id_planets
 
     def __repr__(self):
         return f"Planet name: {self.name}"
