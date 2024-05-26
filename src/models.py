@@ -2,23 +2,24 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-last_id_user = 0
-last_id_people = 0
+last_id_users = 0
+last_id_characters = 0
 last_id_starships = 0
 last_id_planets = 0
-    
-class User(db.Model):
-    __tablename__ = 'user'
+
+class Users(db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32))
     last_name = db.Column(db.String(32))
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(32), nullable=False)
+    user_favorite_characters = db.relationship("FavoriteCharacters", back_populates="user_id_relationship")
     
     def generateId():
-        global last_id_user
-        last_id_user += 1
-        return last_id_user
+        global last_id_users
+        last_id_users += 1
+        return last_id_users
 
     def __repr__(self):
         return f"User name: {self.name}"
@@ -30,9 +31,9 @@ class User(db.Model):
             "last_name": self.last_name,
             "email": self.email
         }
-    
-class People(db.Model):
-    __tablename__ = 'people'
+
+class Characters(db.Model):
+    __tablename__ = 'characters'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True)
     heigth = db.Column(db.Integer)
@@ -42,11 +43,12 @@ class People(db.Model):
     skin_color = db.Column(db.String(20))
     birth_year = db.Column(db.String(20))
     gender = db.Column(db.String(20))
+    favorite_characters = db.relationship("FavoriteCharacters", cascade="all, delete", back_populates="character_id_relationship")
 
     def generateId():
-        global last_id_people
-        last_id_people += 1
-        return last_id_people
+        global last_id_characters
+        last_id_characters += 1
+        return last_id_characters
 
     def __repr__(self):
         return f"Character name: {self.name}"
@@ -63,7 +65,7 @@ class People(db.Model):
             "birth_year": self.birth_year,
             "gender": self.gender
         }
-    
+
 class Starships(db.Model):
     __tablename__ = 'starships'
     id = db.Column(db.Integer, primary_key=True)
@@ -72,7 +74,7 @@ class Starships(db.Model):
     starship_class = db.Column(db.String(50))
     length = db.Column(db.Integer)
     crew = db.Column(db.String(20))
-    passengers = db.Column(db.Integer)
+    passengers = db.Column(db.String(20))
 
     def generateId():
         global last_id_starships
@@ -102,7 +104,7 @@ class Planets(db.Model):
     population = db.Column(db.String(20))
     climate = db.Column(db.String(50))
     terrain = db.Column(db.String(50))
-    surface_water = db.Column(db.Integer)
+    surface_water = db.Column(db.String(20))
 
     def generateId():
         global last_id_planets
@@ -123,30 +125,30 @@ class Planets(db.Model):
             "terrain": self.terrain,
             "surface_water": self.surface_water
         }
-    
-class FavoritePeople(db.Model):
-    __tablename__ = 'favorite_people'
+
+class FavoriteCharacters(db.Model):
+    __tablename__ = 'favorite_characters'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user_id_relationship = db.relationship(User)
-    people_id = db.Column(db.Integer, db.ForeignKey('people.id'))
-    people_id_relationship = db.relationship(People)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id_relationship = db.relationship("Users", back_populates="user_favorite_characters")
+    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
+    character_id_relationship = db.relationship("Characters", back_populates="favorite_characters")
 
     def __repr__(self):
-        return f"User: {self.use_id} -> likes character {self.people_id}"
+        return f"User: {self.user_id} -> likes character {self.character_id}"
     
     def serialize(self):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "people_id": self.people_id
+            "character_id": self.character_id
         }
     
 class FavoriteStarships(db.Model):
     __tablename__ = 'favorite_starships'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user_id_relationship = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id_relationship = db.relationship(Users)
     starship_id = db.Column(db.Integer, db.ForeignKey('starships.id'))
     starship_id_relationship = db.relationship(Starships)
 
@@ -163,8 +165,8 @@ class FavoriteStarships(db.Model):
 class FavoritePlanets(db.Model):
     __tablename__ = 'favorite_planets'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user_id_relationship = db.relationship(User)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id_relationship = db.relationship(Users)
     planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
     planet_id_relationship = db.relationship(Planets)
 
